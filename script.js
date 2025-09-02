@@ -87,57 +87,65 @@ function generateOrder() {
     orderKarameDisplay.textContent = `カラメ：${toppingLevels.karame[order.karame]}`;
 }
 
+
+// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+// ★★★ これが新しい「left/top方式」の画像表示ロジックです ★★★
+// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 function updateRamenImage() {
     bowlContainer.innerHTML = '';
 
+    // レイヤー1: ベース画像
     const baseImage = document.createElement('img');
     baseImage.src = 'images/base_ramen.png';
     baseImage.className = 'topping-image';
     baseImage.style.zIndex = 1;
     bowlContainer.appendChild(baseImage);
 
-    // ★★★ 各トッピングの「ズレる距離」を調整 ★★★
-    const shiftAmount = {
-        vegetable: { x: 0, y: -10, scale: 0 },
-        fat: { x: 0, y: -15, scale: 0 },       // 上への移動距離を詰めた
-        garlic: { x: 25, y: 0, scale: 0.1 },    // 右への移動距離を詰めた
-        karame: { x: 0, y: -30, scale: 0 }
+    // ★★★ 各トッピングの「スタート位置」と「ズレる距離」をここで一括管理 ★★★
+    const positionSettings = {
+        vegetable: { startX: 0, startY: -5, shiftX: 0, shiftY: -10, scale: 0, size: 100 },
+        fat:       { startX: 0, startY: -30, shiftX: 0, shiftY: -3, scale: 0, size: 25 },
+        garlic:    { startX: -15, startY: 0, shiftX: 3, shiftY: 0, scale: 0.1, size: 30 },
+        karame:    { startX: -8, startY: -12, shiftX: 0, shiftY: 0, scale: 0, size: 50 }
     };
 
+    // レイヤー順に処理
     const toppingsInOrder = ['vegetable', 'fat', 'garlic', 'karame'];
     let zIndexCounter = 2;
 
     toppingsInOrder.forEach(toppingName => {
         const level = currentToppings[toppingName];
+        const settings = positionSettings[toppingName];
+
         if (level > 0) {
             const maxImages = (toppingName === 'karame') ? 1 : level;
             
             for (let i = 0; i < maxImages; i++) {
                 const image = document.createElement('img');
                 image.src = `images/${toppingName}.png`;
-                image.className = `topping-image ${toppingName}-base`;
+                image.className = 'topping-image';
                 image.style.zIndex = zIndexCounter++;
 
-                const shiftX = shiftAmount[toppingName].x * i;
-                const shiftY = shiftAmount[toppingName].y * i;
-                const scale = 1.0 + (shiftAmount[toppingName].scale * i);
+                // ★★★ leftとtopを直接計算 ★★★
+                // (スタート位置 + (ズレる距離 * 何枚目か))
+                const posX = settings.startX + (settings.shiftX * i);
+                const posY = settings.startY + (settings.shiftY * i);
+                const scale = 1.0 + (settings.scale * i);
                 
-                // CSSの基本スタイルを取得
-                const tempImg = document.createElement('img');
-                tempImg.className = `topping-image ${toppingName}-base`;
-                document.body.appendChild(tempImg);
-                const baseTransform = getComputedStyle(tempImg).transform;
-                document.body.removeChild(tempImg);
-                
-                const initialTransform = baseTransform === 'none' ? '' : baseTransform;
-
-                image.style.transform = `${initialTransform} translateX(${shiftX}%) translateY(${shiftY}%) scale(${scale})`;
+                // スタイルを直接設定
+                image.style.width = `${settings.size}%`;
+                image.style.height = `${settings.size}%`;
+                // 中央を基準にするため、画像の半分のサイズを引く
+                image.style.left = `calc(50% - ${settings.size / 2}% + ${posX}%)`;
+                image.style.top = `calc(50% - ${settings.size / 2}% + ${posY}%)`;
+                image.style.transform = `scale(${scale})`; // 拡大・縮小だけtransformで行う
                 
                 bowlContainer.appendChild(image);
             }
         }
     });
 }
+// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 
 function handleToppingSelect(event) {
     playSound(soundClick);
@@ -183,4 +191,4 @@ toppingButtons.forEach(button => {
     button.addEventListener('click', handleToppingSelect);
 });
 
-console.log("二郎系ラーメンゲーム（距離調整版）、起動準備完了！");
+console.log("二郎系ラーメンゲーム（left/top方式版）、起動準備完了！");
