@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二郎系ラーメン コールゲーム</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@800&family=Kosugi+Maru&family=RocknRoll+One&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[var(--dark-brown)]" style="background-image: var(--wood-texture)">
+
+    <!-- START SCREEN -->
+    <div id="start-screen">
+        <div class="relative flex size-full min-h-screen flex-col justify-center items-center p-4">
+            <div class="absolute inset-0 bg-black/50"></div>
+            <div class="relative z-10 flex flex-col items-center justify-center w-full max-w-md">
+                <div class="bg-black/70 p-8 rounded-2xl border-4 border-[var(--primary-color)] shadow-2xl shadow-black">
+                    <div class="text-center mb-6">
+                        <h1 class="font-jiro text-4xl text-[var(--primary-color)] tracking-wider" style="text-shadow: 3px 3px 0px var(--accent-color), 6px 6px 0px #000;">ニンニク<br>入れますか？</h1>
+                    </div>
+                    <div class="text-center mb-8 px-4">
+                        <p class="text-white text-base leading-relaxed">お客様の注文に合わせて、<br>素早く正確にトッピングをコール！<br>高得点を目指そう！</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <button id="start-button" class="btn-3d w-full max-w-xs cursor-pointer overflow-hidden bg-[var(--primary-color)] h-16 px-8 text-black text-2xl font-bold"><span>ゲーム開始！</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- GAME SCREEN -->
+    <div id="game-screen" style="display: none;">
+        <div class="min-h-screen flex flex-col bg-cover bg-center" style="background-image: var(--steam-texture);">
+            <header class="sticky top-0 z-10 bg-[#1C1917]/80 backdrop-blur-sm shadow-lg border-b-4 border-black">
+                <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+                    <div id="timer-display" class="text-lg font-bold text-[var(--text-secondary)] font-rocknroll">時間: 60</div>
+                    <div id="score-display" class="text-lg font-bold text-[var(--text-secondary)] font-rocknroll">スコア: 0</div>
+                </div>
+            </header>
+            <main class="flex-grow flex flex-col items-center px-4 pt-4 pb-2 space-y-4">
+                <div class="w-full max-w-sm chalkboard">
+                    <h3 class="text-center text-lg font-bold text-[var(--secondary-color)] mb-2 font-rocknroll">お客様の注文</h3>
+                    <div id="order-list" class="text-center handwritten text-xl space-y-1">
+                        <p id="order-vegetable">ヤサイ：マシ</p>
+                        <p id="order-garlic">ニンニク：マシマシ</p>
+                        <p id="order-fat">アブラ：普通</p>
+                        <p id="order-karame">カラメ：あり</p>
+                    </div>
+                </div>
+                <div id="bowl-container" class="relative w-full max-w-xs aspect-square flex items-center justify-center">
+                    <!-- JavaScriptによって画像がここに追加されます -->
+                </div>
+            </main>
+            <footer class="bg-black/50 p-4 border-t-4 border-black">
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between space-x-2">
+                        <p class="w-20 text-center font-rocknroll text-white">ヤサイ</p>
+                        <div class="flex-grow grid grid-cols-4 gap-2">
+                            <button class="topping-button" data-topping="vegetable" data-level="0">抜き</button>
+                            <button class="topping-button" data-topping="vegetable" data-level="1">普通</button>
+                            <button class="topping-button" data-topping="vegetable" data-level="2">マシ</button>
+                            <button class="topping-button" data-topping="vegetable" data-level="3">マシマシ</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between space-x-2">
+                        <p class="w-20 text-center font-rocknroll text-white">ニンニク</p>
+                        <div class="flex-grow grid grid-cols-4 gap-2">
+                            <button class="topping-button" data-topping="garlic" data-level="0">抜き</button>
+                            <button class="topping-button" data-topping="garlic" data-level="1">普通</button>
+                            <button class="topping-button" data-topping="garlic" data-level="2">マシ</button>
+                            <button class="topping-button" data-topping="garlic" data-level="3">マシマシ</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between space-x-2">
+                        <p class="w-20 text-center font-rocknroll text-white">アブラ</p>
+                        <div class="flex-grow grid grid-cols-4 gap-2">
+                            <button class="topping-button" data-topping="fat" data-level="0">抜き</button>
+                            <button class="topping-button" data-topping="fat" data-level="1">普通</button>
+                            <button class="topping-button" data-topping="fat" data-level="2">マシ</button>
+                            <button class="topping-button" data-topping="fat" data-level="3">マシマシ</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between space-x-2">
+                        <p class="w-20 text-center font-rocknroll text-white">カラメ</p>
+                        <div class="flex-grow grid grid-cols-2 gap-2">
+                            <button class="topping-button" data-topping="karame" data-level="0">なし</button>
+                            <button class="topping-button" data-topping="karame" data-level="1">あり</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button id="serve-button" class="w-full py-4 text-3xl serve-button">提供ッ！</button>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" style="display: none;">
+        <div class="relative flex size-full min-h-screen flex-col justify-center items-center ramen-shop-bg p-4">
+             <div class="content-wrapper flex flex-col items-center justify-center text-center text-white">
+                <h2 class="text-4xl font-black tracking-wider mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">ゲーム終了！</h2>
+                <div class="my-8">
+                    <p class="text-white text-lg">スコア</p>
+                    <h1 id="final-score" class="text-6xl font-black text-yellow-400" style="-webkit-text-stroke: 2px #000; text-stroke: 2px #000;">0</h1>
+                </div>
+                <p class="text-2xl font-bold mb-12" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">完食！ごちそうさまでした！</p>
+                <button id="retry-button" class="min-w-[280px] cursor-pointer rounded-lg h-16 px-8 bg-yellow-400 text-black text-2xl font-black border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all duration-150"><span>もう一杯！</span></button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="sound-click" preload="auto" src="sounds/click.mp3"></audio>
+    <audio id="sound-correct" preload="auto" src="sounds/correct.mp3"></audio>
+    <audio id="sound-start" preload="auto" src="sounds/start.mp3"></audio>
+    <script src="script.js"></script>
+</body>
+</html>
