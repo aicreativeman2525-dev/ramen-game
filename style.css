@@ -42,16 +42,16 @@ body { background-color: var(--dark-brown); font-family: "Noto Sans JP", sans-se
 .fat-base {
     width: 22%;
     height: 22%;
-    transform: translate(66%, 22%); /* ★スタート位置: ヤサイ中心の少し下 */
+    transform: translate(115%, 22%); /* ★スタート位置: ヤサイ中心の少し下 */
 }
 .garlic-base {
     width: 20%;
     height: 20%;
-    transform: translate(50%, 75%); /* スタート位置: ヤサイ中心の左部 */
+    transform: translate(80%, 75%); /* スタート位置: ヤサイ中心の左部 */
 }
 .karame-base {
     width: 60%;
     height: 60%;
-    transform: translate(10%, 5%); /* スタート位置: ヤサイ中心の上部 */
+    transform: translate(15%, 5%); /* スタート位置: ヤサイ中心の上部 */
     opacity: 0.8;
 }
