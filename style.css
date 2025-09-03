@@ -19,7 +19,7 @@ body { background-color: var(--dark-brown); font-family: "Noto Sans JP", sans-se
 .selected-topping { background-color: var(--secondary-color) !important; color: black !important; border-color: #D97706 !important; }
 .serve-button { font-family: 'RocknRoll One', sans-serif; background-color: #EF4444; color: white; border: 4px solid #000000; border-radius: 9999px; box-shadow: 0 8px 0 #000000, 0 10px 15px rgba(0,0,0,0.3); transition: all 0.1s ease-in-out; text-shadow: 2px 2px 0 #000; }
 .serve-button:active { transform: translateY(4px); box-shadow: 0 4px 0 #000000, 0 6px 10px rgba(0,0,0,0.3); }
-.ramen-shop-bg { background-image: url("https://images.unsplash.com/photo-1552634351-d2c42171120f?q=80&w=1974&auto-format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"); background-size: cover; background-position: center; }
+.ramen-shop-bg { background-image: url("https://images.unsplash.com/photo-1552634351-d2c42171120f?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"); background-size: cover; background-position: center; }
 .ramen-shop-bg::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.7); z-index: 1; }
 .content-wrapper { position: relative; z-index: 2; }
 
@@ -33,13 +33,13 @@ body { background-color: var(--dark-brown); font-family: "Noto Sans JP", sans-se
 }
 
 /* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
-/* ★★★ スマホ画面でスクロールさせないためのレイアウト調整（最終版） ★★★ */
+/* ★★★ スマホ画面でスクロールさせないためのレイアウト調整（最終修正版） ★★★ */
 /* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
 
 /* まず、bodyとゲーム画面が画面の高さいっぱいに広がるように設定 */
 html, body {
-    height: 100dvh; /* dvhはアドレスバーなどを除いた、実際の表示領域の高さ */
-    overflow: hidden; /* スクロールバーを強制的に非表示に */
+    height: 100dvh;
+    overflow: hidden;
 }
 
 #game-screen {
@@ -56,20 +56,19 @@ html, body {
         padding-bottom: 0.25rem;
     }
     #timer-display, #score-display {
-        font-size: 1rem; /* 少し小さく */
+        font-size: 1rem;
     }
 
     /* ゲーム画面のメイン部分（丼）とフッター部分（ボタン）の比率を調整 */
     #game-screen main {
         flex-grow: 1; 
-        padding-top: 0; /* 余白を極限まで詰める */
+        padding-top: 0;
         padding-bottom: 0;
-        space-y: 0;
-        min-height: 0; /* flexアイテムの縮小を許可 */
+        min-height: 0;
     }
     #game-screen footer {
         flex-shrink: 0; 
-        padding: 0.5rem; /* フッター全体の余白を詰める */
+        padding: 0.5rem;
     }
     
     /* 注文票の余白と文字サイズを詰める */
@@ -83,20 +82,24 @@ html, body {
     }
     #order-list {
         font-size: 1rem;
-        line-height: 1.2; /* 行間を詰める */
-        space-y: 0;
+        line-height: 1.2;
+    }
+    #order-list p:not(:first-child) {
+        margin-top: 0;
     }
 
     /* 丼のコンテナサイズを調整 */
     #bowl-container {
-        flex-grow: 1; /* 残りのスペースを全て丼が使うように */
-        max-height: 90%; /* 高さが大きくなりすぎないように */
+        flex-grow: 1;
+        max-height: 90%;
         width: 100%;
     }
 
     /* ボタン群全体の余白を詰める */
-    #game-screen footer .space-y-3 {
-        space-y: 0.25rem; /* 各行の間の余白 */
+    #game-screen footer > div {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
     }
 
     /* 各操作ボタンのグループを詰める */
@@ -106,7 +109,7 @@ html, body {
     .topping-button {
         padding-top: 0.25rem;
         padding-bottom: 0.25rem;
-        font-size: 0.75rem; /* 文字を小さく */
+        font-size: 0.75rem;
         border-bottom-width: 4px;
     }
     .topping-button:active {
