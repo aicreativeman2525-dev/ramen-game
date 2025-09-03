@@ -42,6 +42,33 @@ html, body {
     max-height: 100dvh; 
 }
 
+/* 新しい2x2レイアウト用のスタイル */
+.control-row {
+    display: flex;
+    align-items: center;
+}
+.control-label {
+    width: 4rem; /* 16 * 0.25rem */
+    text-align: center;
+    font-family: 'RocknRoll One', sans-serif;
+    color: white;
+    font-size: 0.875rem; /* 14px */
+    flex-shrink: 0;
+}
+.control-buttons {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.25rem;
+}
+.control-buttons-karame {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.25rem;
+}
+
+
 @media (max-height: 900px) {
     
     #game-screen header .container {
@@ -54,13 +81,16 @@ html, body {
 
     #game-screen main {
         flex-grow: 1; 
-        padding-top: 0;
-        padding-bottom: 0;
+        padding: 0;
         min-height: 0;
     }
     #game-screen footer {
         flex-shrink: 0; 
         padding: 0.5rem;
+        /* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
+        /* ★★★ ボタンエリア全体を底上げ（20px相当） ★★★ */
+        padding-bottom: 20px; 
+        /* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
     }
     
     .chalkboard {
@@ -79,26 +109,23 @@ html, body {
         margin-top: 0;
     }
 
-    /* 丼のコンテナサイズを調整 */
     #bowl-container {
         flex-grow: 1;
         max-height: 90%;
         width: 100%;
-        /* ★★★★★★★★★★★★★★★★★★★★★★★★★ */
-        /* ★★★ スマホの時だけ、全体を上に移動 ★★★ */
         transform: translateY(-15px);
-        /* ★★★★★★★★★★★★★★★★★★★★★★★★★ */
     }
 
-    #game-screen footer > div {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
+    #game-screen footer > .grid {
+        gap: 0.5rem;
+        row-gap: 0.25rem;
     }
 
-    .flex-grow.grid {
-        gap: 0.25rem;
+    .control-label {
+        font-size: 0.75rem; /* 12px */
+        width: 3rem;
     }
+
     .topping-button {
         padding-top: 0.25rem;
         padding-bottom: 0.25rem;
@@ -109,10 +136,7 @@ html, body {
         transform: translateY(2px);
         border-bottom-width: 2px;
     }
-    .w-20 { 
-        font-size: 0.75rem;
-    }
-
+    
     #serve-button {
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;

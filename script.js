@@ -96,18 +96,17 @@ function updateRamenImage() {
     baseImage.style.zIndex = 1;
     bowlContainer.appendChild(baseImage);
 
-  // ★★★ 各トッピングの「スタート位置」と「ズレる距離」をここで一括管理 ★★★
+ // ★★★ 各トッピングの「スタート位置」と「ズレる距離」をここで一括管理 ★★★
     const positionSettings = {
         vegetable: { startX: 0, startY: -5, shiftX: 0, shiftY: -10, scale: 0, size: 100 },
         fat:       { startX: 0, startY: -30, shiftX: 0, shiftY: -3, scale: 0, size: 25 },
         garlic:    { startX: -15, startY: 0, shiftX: 3, shiftY: 0, scale: 0.1, size: 30 },
         karame:    { startX: -8, startY: -12, shiftX: 0, shiftY: 0, scale: 0, size: 50 }
     };
-
     const toppingsInOrder = ['vegetable', 'fat', 'garlic', 'karame'];
     let zIndexCounter = 2;
 
-    toppingsInOrder.forEach(toppingName => { // ★★★ forEach に修正 ★★★
+    toppingsInOrder.forEach(toppingName => {
         const level = currentToppings[toppingName];
         const settings = positionSettings[toppingName];
 
@@ -117,7 +116,7 @@ function updateRamenImage() {
             for (let i = 0; i < maxImages; i++) {
                 const image = document.createElement('img');
                 image.src = `images/${toppingName}.png`;
-                image.className = 'topping-image';
+                image.className = `topping-image`;
                 image.style.zIndex = zIndexCounter++;
 
                 const posX = settings.startX + (settings.shiftX * i);
@@ -146,7 +145,7 @@ function handleToppingSelect(event) {
 
 function updateButtonStyles(topping) {
     const buttons = document.querySelectorAll(`.topping-button[data-topping="${topping}"]`);
-    buttons.forEach(button => { // ★★★ forEach に修正 ★★★
+    buttons.forEach(button => {
         const level = parseInt(button.dataset.level, 10);
         if (level === currentToppings[topping]) {
             button.classList.add('selected-topping');
@@ -176,8 +175,8 @@ function serveRamen() {
 startButton.addEventListener('click', startGame);
 serveButton.addEventListener('click', serveRamen);
 retryButton.addEventListener('click', startGame);
-toppingButtons.forEach(button => {
+toppingButtons.forEach(button => { // ★★★ ヤサイのボタンも含まれるように修正 ★★★
     button.addEventListener('click', handleToppingSelect);
 });
 
-console.log("二郎系ラーメンゲーム（スマホレイアウト最終調整版）、起動準備完了！");
+console.log("二郎系ラーメンゲーム（最終調整版）、起動準備完了！");
