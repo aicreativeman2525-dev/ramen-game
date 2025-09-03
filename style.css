@@ -33,73 +33,101 @@ body { background-color: var(--dark-brown); font-family: "Noto Sans JP", sans-se
 }
 
 /* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
-/* ★★★ スマホ画面でスクロールさせないためのレイアウト調整 ★★★ */
+/* ★★★ スマホ画面でスクロールさせないためのレイアウト調整（最終版） ★★★ */
 /* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
 
 /* まず、bodyとゲーム画面が画面の高さいっぱいに広がるように設定 */
 html, body {
-    height: 100%;
+    height: 100dvh; /* dvhはアドレスバーなどを除いた、実際の表示領域の高さ */
     overflow: hidden; /* スクロールバーを強制的に非表示に */
 }
 
 #game-screen {
     height: 100%;
-    max-height: 100vh; /* 画面の高さを超えないように */
+    max-height: 100dvh; 
 }
 
-/* 画面の高さが850px以下のデバイス（多くのスマホが該当）に適用 */
-@media (max-height: 850px) {
-    /* ゲーム画面のメイン部分（丼）とフッター部分（ボタン）の比率を調整 */
-    #game-screen main {
-        flex-grow: 1; /* メイン部分ができるだけ広がる */
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
-        space-y: 0.5rem;
+/* 画面の高さが900px以下のデバイス（ほぼ全てのスマホ）に適用 */
+@media (max-height: 900px) {
+    
+    /* ヘッダーを少し詰める */
+    #game-screen header .container {
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
     }
-    #game-screen footer {
-        flex-shrink: 0; /* フッターは縮まない */
-        padding: 0.75rem;
+    #timer-display, #score-display {
+        font-size: 1rem; /* 少し小さく */
     }
 
-    /* 丼のサイズを少し小さくする */
+    /* ゲーム画面のメイン部分（丼）とフッター部分（ボタン）の比率を調整 */
+    #game-screen main {
+        flex-grow: 1; 
+        padding-top: 0; /* 余白を極限まで詰める */
+        padding-bottom: 0;
+        space-y: 0;
+        min-height: 0; /* flexアイテムの縮小を許可 */
+    }
+    #game-screen footer {
+        flex-shrink: 0; 
+        padding: 0.5rem; /* フッター全体の余白を詰める */
+    }
+    
+    /* 注文票の余白と文字サイズを詰める */
+    .chalkboard {
+        padding: 0.5rem;
+        margin-bottom: 0;
+    }
+    .chalkboard h3 {
+        margin-bottom: 0.25rem;
+        font-size: 1rem;
+    }
+    #order-list {
+        font-size: 1rem;
+        line-height: 1.2; /* 行間を詰める */
+        space-y: 0;
+    }
+
+    /* 丼のコンテナサイズを調整 */
     #bowl-container {
-        max-width: 280px; /* PCではmax-w-xs (320px) だったのを少し小さく */
+        flex-grow: 1; /* 残りのスペースを全て丼が使うように */
+        max-height: 90%; /* 高さが大きくなりすぎないように */
+        width: 100%;
     }
 
     /* ボタン群全体の余白を詰める */
     #game-screen footer .space-y-3 {
-        space-y: 0.5rem;
+        space-y: 0.25rem; /* 各行の間の余白 */
     }
 
-    /* 各操作ボタンのグループの高さを少し詰める */
+    /* 各操作ボタンのグループを詰める */
     .flex-grow.grid {
-        gap: 0.25rem; /* ボタン間の隙間を詰める */
+        gap: 0.25rem;
     }
     .topping-button {
         padding-top: 0.25rem;
         padding-bottom: 0.25rem;
-        font-size: 0.875rem; /* 文字サイズを少し小さく */
+        font-size: 0.75rem; /* 文字を小さく */
+        border-bottom-width: 4px;
     }
-    .w-20 { /* 「ヤサイ」などのラベル */
-        font-size: 0.875rem;
+    .topping-button:active {
+        transform: translateY(2px);
+        border-bottom-width: 2px;
+    }
+    .w-20 { 
+        font-size: 0.75rem;
     }
 
-    /* 「提供ッ！」ボタンを少し小さく */
+    /* 「提供ッ！」ボタンを小さく */
     #serve-button {
-        padding-top: 0.75rem;
-        padding-bottom: 0.75rem;
-        font-size: 1.5rem; /* text-3xl -> text-2xl相当 */
-        margin-top: 0.75rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        font-size: 1.25rem;
+        margin-top: 0.5rem;
+        border-width: 2px;
+        box-shadow: 0 4px 0 #000000;
     }
-}
-
-/* 特に縦が短いスマホ（iPhone SEなど）向け */
-@media (max-height: 700px) {
-    /* 丼をさらに小さく */
-    #bowl-container {
-        max-width: 240px;
-    }
-     #game-screen footer {
-        padding: 0.5rem;
+    #serve-button:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 0 #000000;
     }
 }
