@@ -95,16 +95,16 @@ function updateRamenImage() {
     baseImage.className = 'topping-image';
     baseImage.style.zIndex = 1;
     // ★★★ ベースとなる丼の位置を少し上に ★★★
-    baseImage.style.transform = 'translateY(-15px)';
+    baseImage.style.transform = 'translateY(-70px)';
     bowlContainer.appendChild(baseImage);
 
    
  // ★★★ 各トッピングの「スタート位置」と「ズレる距離」をここで一括管理 ★★★
     const positionSettings = {
-        vegetable: { startX: 0, startY: -5, shiftX: 0, shiftY: -10, scale: 0, size: 100 },
-        fat:       { startX: 0, startY: -30, shiftX: 0, shiftY: -3, scale: 0, size: 25 },
-        garlic:    { startX: -15, startY: 0, shiftX: 3, shiftY: 0, scale: 0.1, size: 30 },
-        karame:    { startX: -8, startY: -12, shiftX: 0, shiftY: 0, scale: 0, size: 50 }
+        vegetable: { startX: 0, startY: -15, shiftX: 0, shiftY: -10, scale: 0, size: 100 },
+        fat:       { startX: 0, startY: -40, shiftX: 0, shiftY: -3, scale: 0, size: 25 },
+        garlic:    { startX: -15, startY: -15, shiftX: 3, shiftY: 0, scale: 0.1, size: 30 },
+        karame:    { startX: -8, startY: -22, shiftX: 0, shiftY: 0, scale: 0, size: 50 }
     };
 
     // レイヤー順に処理
