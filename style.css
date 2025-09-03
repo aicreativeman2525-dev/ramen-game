@@ -19,7 +19,7 @@ body { background-color: var(--dark-brown); font-family: "Noto Sans JP", sans-se
 .selected-topping { background-color: var(--secondary-color) !important; color: black !important; border-color: #D97706 !important; }
 .serve-button { font-family: 'RocknRoll One', sans-serif; background-color: #EF4444; color: white; border: 4px solid #000000; border-radius: 9999px; box-shadow: 0 8px 0 #000000, 0 10px 15px rgba(0,0,0,0.3); transition: all 0.1s ease-in-out; text-shadow: 2px 2px 0 #000; }
 .serve-button:active { transform: translateY(4px); box-shadow: 0 4px 0 #000000, 0 6px 10px rgba(0,0,0,0.3); }
-.ramen-shop-bg { background-image: url("https://images.unsplash.com/photo-1552634351-d2c42171120f?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"); background-size: cover; background-position: center; }
+.ramen-shop-bg { background-image: url("https://images.unsplash.com/photo-1552634351-d2c42171120f?q=80&w=1974&auto-format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"); background-size: cover; background-position: center; }
 .ramen-shop-bg::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.7); z-index: 1; }
 .content-wrapper { position: relative; z-index: 2; }
 
@@ -27,7 +27,8 @@ body { background-color: var(--dark-brown); font-family: "Noto Sans JP", sans-se
 .topping-image {
     position: absolute;
     object-fit: contain;
-    pointer-events: none;
+    /* ★★★ 画像自体もクリックイベントを無視するように ★★★ */
+    pointer-events: none; 
     transition: all 0.2s ease-out;
 }
 
@@ -43,30 +44,10 @@ html, body {
 }
 
 /* 新しい2x2レイアウト用のスタイル */
-.control-row {
-    display: flex;
-    align-items: center;
-}
-.control-label {
-    width: 4rem; /* 16 * 0.25rem */
-    text-align: center;
-    font-family: 'RocknRoll One', sans-serif;
-    color: white;
-    font-size: 0.875rem; /* 14px */
-    flex-shrink: 0;
-}
-.control-buttons {
-    flex-grow: 1;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.25rem;
-}
-.control-buttons-karame {
-    flex-grow: 1;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.25rem;
-}
+.control-row { display: flex; align-items: center; }
+.control-label { width: 4rem; text-align: center; font-family: 'RocknRoll One', sans-serif; color: white; font-size: 0.875rem; flex-shrink: 0; }
+.control-buttons { flex-grow: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.25rem; }
+.control-buttons-karame { flex-grow: 1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.25rem; }
 
 
 @media (max-height: 900px) {
@@ -87,10 +68,7 @@ html, body {
     #game-screen footer {
         flex-shrink: 0; 
         padding: 0.5rem;
-        /* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
-        /* ★★★ ボタンエリア全体を底上げ（20px相当） ★★★ */
         padding-bottom: 20px; 
-        /* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
     }
     
     .chalkboard {
@@ -114,6 +92,10 @@ html, body {
         max-height: 90%;
         width: 100%;
         transform: translateY(-15px);
+        /* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
+        /* ★★★ これが今回の問題の解決策です ★★★ */
+        pointer-events: none;
+        /* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
     }
 
     #game-screen footer > .grid {
@@ -122,7 +104,7 @@ html, body {
     }
 
     .control-label {
-        font-size: 0.75rem; /* 12px */
+        font-size: 0.75rem;
         width: 3rem;
     }
 
