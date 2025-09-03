@@ -94,24 +94,20 @@ function updateRamenImage() {
     baseImage.src = 'images/base_ramen.png';
     baseImage.className = 'topping-image';
     baseImage.style.zIndex = 1;
-    // ★★★ ベースとなる丼の位置を少し上に ★★★
-    baseImage.style.transform = 'translateY(-70px)';
     bowlContainer.appendChild(baseImage);
 
-   
- // ★★★ 各トッピングの「スタート位置」と「ズレる距離」をここで一括管理 ★★★
+  // ★★★ 各トッピングの「スタート位置」と「ズレる距離」をここで一括管理 ★★★
     const positionSettings = {
-        vegetable: { startX: 0, startY: -15, shiftX: 0, shiftY: -10, scale: 0, size: 100 },
-        fat:       { startX: 0, startY: -40, shiftX: 0, shiftY: -3, scale: 0, size: 25 },
-        garlic:    { startX: -15, startY: -15, shiftX: 3, shiftY: 0, scale: 0.1, size: 30 },
-        karame:    { startX: -8, startY: -22, shiftX: 0, shiftY: 0, scale: 0, size: 50 }
+        vegetable: { startX: 0, startY: -5, shiftX: 0, shiftY: -10, scale: 0, size: 100 },
+        fat:       { startX: 0, startY: -30, shiftX: 0, shiftY: -3, scale: 0, size: 25 },
+        garlic:    { startX: -15, startY: 0, shiftX: 3, shiftY: 0, scale: 0.1, size: 30 },
+        karame:    { startX: -8, startY: -12, shiftX: 0, shiftY: 0, scale: 0, size: 50 }
     };
 
-    // レイヤー順に処理
     const toppingsInOrder = ['vegetable', 'fat', 'garlic', 'karame'];
     let zIndexCounter = 2;
 
-    toppingsInOrder.forEach(toppingName => {
+    toppingsInOrder.forEach(toppingName => { // ★★★ forEach に修正 ★★★
         const level = currentToppings[toppingName];
         const settings = positionSettings[toppingName];
 
@@ -130,9 +126,8 @@ function updateRamenImage() {
                 
                 image.style.width = `${settings.size}%`;
                 image.style.height = `${settings.size}%`;
-                // ★★★ 全体のY位置を-15pxする ★★★
                 image.style.left = `calc(50% - ${settings.size / 2}% + ${posX}%)`;
-                image.style.top = `calc(50% - ${settings.size / 2}% + ${posY}% - 15px)`; // 15px上に
+                image.style.top = `calc(50% - ${settings.size / 2}% + ${posY}%)`;
                 image.style.transform = `scale(${scale})`;
                 
                 bowlContainer.appendChild(image);
@@ -151,7 +146,7 @@ function handleToppingSelect(event) {
 
 function updateButtonStyles(topping) {
     const buttons = document.querySelectorAll(`.topping-button[data-topping="${topping}"]`);
-    buttons.forEach(button => {
+    buttons.forEach(button => { // ★★★ forEach に修正 ★★★
         const level = parseInt(button.dataset.level, 10);
         if (level === currentToppings[topping]) {
             button.classList.add('selected-topping');
@@ -185,4 +180,4 @@ toppingButtons.forEach(button => {
     button.addEventListener('click', handleToppingSelect);
 });
 
-console.log("二郎系ラーメンゲーム（画像位置調整版）、起動準備完了！");
+console.log("二郎系ラーメンゲーム（スマホレイアウト最終調整版）、起動準備完了！");

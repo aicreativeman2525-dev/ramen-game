@@ -26,17 +26,12 @@ body { background-color: var(--dark-brown); font-family: "Noto Sans JP", sans-se
 /* トッピング画像を重ねるための基本スタイル */
 .topping-image {
     position: absolute;
-    /* width, height, left, top はJavaScriptで直接設定します */
     object-fit: contain;
     pointer-events: none;
-    transition: all 0.2s ease-out; /* 動きを滑らかに */
+    transition: all 0.2s ease-out;
 }
 
-/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
-/* ★★★ スマホ画面でスクロールさせないためのレイアウト調整（最終修正版） ★★★ */
-/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
-
-/* まず、bodyとゲーム画面が画面の高さいっぱいに広がるように設定 */
+/* スマホ画面でスクロールさせないためのレイアウト調整 */
 html, body {
     height: 100dvh;
     overflow: hidden;
@@ -47,10 +42,8 @@ html, body {
     max-height: 100dvh; 
 }
 
-/* 画面の高さが900px以下のデバイス（ほぼ全てのスマホ）に適用 */
 @media (max-height: 900px) {
     
-    /* ヘッダーを少し詰める */
     #game-screen header .container {
         padding-top: 0.25rem;
         padding-bottom: 0.25rem;
@@ -59,7 +52,6 @@ html, body {
         font-size: 1rem;
     }
 
-    /* ゲーム画面のメイン部分（丼）とフッター部分（ボタン）の比率を調整 */
     #game-screen main {
         flex-grow: 1; 
         padding-top: 0;
@@ -71,7 +63,6 @@ html, body {
         padding: 0.5rem;
     }
     
-    /* 注文票の余白と文字サイズを詰める */
     .chalkboard {
         padding: 0.5rem;
         margin-bottom: 0;
@@ -93,16 +84,18 @@ html, body {
         flex-grow: 1;
         max-height: 90%;
         width: 100%;
+        /* ★★★★★★★★★★★★★★★★★★★★★★★★★ */
+        /* ★★★ スマホの時だけ、全体を上に移動 ★★★ */
+        transform: translateY(-15px);
+        /* ★★★★★★★★★★★★★★★★★★★★★★★★★ */
     }
 
-    /* ボタン群全体の余白を詰める */
     #game-screen footer > div {
         display: flex;
         flex-direction: column;
         gap: 0.25rem;
     }
 
-    /* 各操作ボタンのグループを詰める */
     .flex-grow.grid {
         gap: 0.25rem;
     }
@@ -120,7 +113,6 @@ html, body {
         font-size: 0.75rem;
     }
 
-    /* 「提供ッ！」ボタンを小さく */
     #serve-button {
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
