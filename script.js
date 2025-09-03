@@ -87,21 +87,19 @@ function generateOrder() {
     orderKarameDisplay.textContent = `カラメ：${toppingLevels.karame[order.karame]}`;
 }
 
-
-// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-// ★★★ これが新しい「left/top方式」の画像表示ロジックです ★★★
-// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 function updateRamenImage() {
     bowlContainer.innerHTML = '';
 
-    // レイヤー1: ベース画像
     const baseImage = document.createElement('img');
     baseImage.src = 'images/base_ramen.png';
     baseImage.className = 'topping-image';
     baseImage.style.zIndex = 1;
+    // ★★★ ベースとなる丼の位置を少し上に ★★★
+    baseImage.style.transform = 'translateY(-15px)';
     bowlContainer.appendChild(baseImage);
 
-    // ★★★ 各トッピングの「スタート位置」と「ズレる距離」をここで一括管理 ★★★
+   
+ // ★★★ 各トッピングの「スタート位置」と「ズレる距離」をここで一括管理 ★★★
     const positionSettings = {
         vegetable: { startX: 0, startY: -5, shiftX: 0, shiftY: -10, scale: 0, size: 100 },
         fat:       { startX: 0, startY: -30, shiftX: 0, shiftY: -3, scale: 0, size: 25 },
@@ -126,26 +124,22 @@ function updateRamenImage() {
                 image.className = 'topping-image';
                 image.style.zIndex = zIndexCounter++;
 
-                // ★★★ leftとtopを直接計算 ★★★
-                // (スタート位置 + (ズレる距離 * 何枚目か))
                 const posX = settings.startX + (settings.shiftX * i);
                 const posY = settings.startY + (settings.shiftY * i);
                 const scale = 1.0 + (settings.scale * i);
                 
-                // スタイルを直接設定
                 image.style.width = `${settings.size}%`;
                 image.style.height = `${settings.size}%`;
-                // 中央を基準にするため、画像の半分のサイズを引く
+                // ★★★ 全体のY位置を-15pxする ★★★
                 image.style.left = `calc(50% - ${settings.size / 2}% + ${posX}%)`;
-                image.style.top = `calc(50% - ${settings.size / 2}% + ${posY}%)`;
-                image.style.transform = `scale(${scale})`; // 拡大・縮小だけtransformで行う
+                image.style.top = `calc(50% - ${settings.size / 2}% + ${posY}% - 15px)`; // 15px上に
+                image.style.transform = `scale(${scale})`;
                 
                 bowlContainer.appendChild(image);
             }
         }
     });
 }
-// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 
 function handleToppingSelect(event) {
     playSound(soundClick);
@@ -191,4 +185,4 @@ toppingButtons.forEach(button => {
     button.addEventListener('click', handleToppingSelect);
 });
 
-console.log("二郎系ラーメンゲーム（left/top方式版）、起動準備完了！");
+console.log("二郎系ラーメンゲーム（画像位置調整版）、起動準備完了！");
