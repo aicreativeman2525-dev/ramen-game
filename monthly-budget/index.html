@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>佐野の月次収支ノート</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; background: #eef3f5; color: #172e38; font: 16px/1.55 system-ui, sans-serif; }
+main { max-width: 760px; margin: auto; padding: 24px 14px 48px; }
+h1 { font-size: 1.65rem; margin: 0; }
+h2 { font-size: 1.15rem; margin: 0 0 8px; }
+p { margin: 6px 0; }
+section { background: white; border: 1px solid #cfdce0; border-radius: 14px; padding: 14px; margin: 14px 0; }
+.toolbar, .totals { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.totals > div { flex: 1 1 140px; background: #eaf4f2; padding: 10px; border-radius: 8px; }
+output { display: block; font-size: 1.35rem; font-weight: bold; }
+.totals #planned { font-size: clamp(2.6rem, 10vw, 4.5rem); line-height: 1.15; }
+.loss { color: #a12035; }
+.muted { color: #48606a; font-size: .88rem; }
+input, button { font: inherit; color: inherit; padding: 8px; border: 1px solid #859da5; border-radius: 7px; }
+button { background: #075d56; color: white; padding-inline: 16px; cursor: pointer; }
+table { width: 100%; table-layout: fixed; border-collapse: collapse; }
+th, td { border-bottom: 1px solid #e0e9ec; padding: 7px 3px; }
+th:first-child { width: 36%; text-align: left; }
+td input { width: 100%; text-align: right; }
+#status { min-height: 1.5em; }
+</style>
+</head>
+<body>
+<main>
+  <h1>佐野の月次収支ノート</h1>
+  <p>毎月の収入と支出から、いくら残るかを確認する。</p>
+  <section>
+    <div class="toolbar">
+      <label for="month">確認する月</label>
+      <input id="month" type="month" required>
+      <button id="nextMonth" type="button">翌月に進む →</button>
+    </div>
+    <p class="muted">「翌月に進む」で1か月ずつ進めます。月欄から直接選ぶこともできます。</p>
+  </section>
+  <section class="totals" aria-label="収支の集計" aria-live="polite">
+    <div>最終収支<output id="planned"></output></div>
+  </section>
+  <p id="beforeStart" hidden>収支の記録は2026年12月からです。</p>
+  <form id="budget">
+    <section>
+      <h2>この月のお金</h2>
+      <p class="muted">単位は万円。5,000円なら「0.5」。返済の3項目は月ごとの固定額です。</p>
+      <table>
+        <thead><tr><th scope="col">項目</th><th scope="col">金額</th></tr></thead>
+        <tbody id="entries"></tbody>
+      </table>
+      <p class="muted">空欄は集計外。ヒロさんは支払う月に入力。借入と臨時返済は、受け渡しを確認してからそれぞれ入力。</p>
+    </section>
+    <button type="submit">収支を更新</button>
+    <p id="status" role="status"></p>
+  </form>
+  <section>
+    <h2>毎月の使い方</h2>
+    <p>月初に金額を確認し、支払いが変わったら更新。月末に最終収支を見て翌月の予算を決める。</p>
+    <p class="muted">保存先はこの端末のブラウザです。ファイルを渡しても入力内容は共有されません。端末やブラウザを変えると、保存した内容を引き継げない場合があります。</p>
+  </section>
+</main>
+<script>
+const items = [
+  ['income', '手取り・追加収入', 1],
+  ['borrowing', '借入・その他入金', 1],
+  ['rent', '家賃', -1],
+  ['food', '食費', -1],
+  ['insurance', '保険', -1],
+  ['mobile', 'メルペイ・携帯', -1],
+  ['koi', 'こいちゃん', -1],
+  ['akiyama', '秋山さん', -1],
+  ['maji', 'マジさん', -1],
+  ['hiro', 'ヒロさん', -1],
+  ['other', 'その他・臨時返済', -1],
+];
+const month = document.getElementById('month');
+const status = document.getElementById('status');
+const form = document.getElementById('budget');
+const drafts = new Map();
+const storageKey = 'sano-monthly-budget-v2:';
+const today = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit' });
+let displayedMonth = '';
+const fixed = new Set(['koi', 'akiyama', 'maji']);
+const fields = items.map(([key, label, direction]) => {
+  const row = document.getElementById('entries').insertRow();
+  row.innerHTML = `<th scope="row">${label}</th>
+    <td><input aria-label="${label}" type="number" min="0" step="0.0001" placeholder="—" ${fixed.has(key) ? "readonly" : ""}></td>`;
+  return { key, direction, input: row.querySelector("input") };
+});
+
+function initialPlan(date) {
+  if (date < '2026-12') return {};
+  let koi = 10;
+  if (date >= '2027-02') koi = 15;
+  if (date >= '2027-04') koi = 23;
+  if (date === '2027-09') koi = 10;
+  if (date >= '2027-10') koi = 0;
+  return {
+    income: 52, rent: 6, food: 5, insurance: 7, mobile: 2,
+    koi,
+    akiyama: date >= '2026-12' && date <= '2027-01' ? 15 : 0,
+    maji: date >= '2026-12' && date <= '2027-03' ? 15 : 0,
+  };
+}
+
+function readInputs() {
+  return fields.map(({ input }) => input.value);
+}
+
+function renderTotal(id, yen) {
+  const output = document.getElementById(id);
+  output.textContent = yen === null ? '—' : new Intl.NumberFormat('ja-JP', {
+    signDisplay: 'exceptZero', style: 'currency', currency: 'JPY',
+  }).format(yen);
+  output.classList.toggle('loss', yen < 0);
+}
+
+function calculate() {
+  const net = fields.reduce((total, { direction, input }) =>
+    total + direction * Math.round(Number(input.value) * 10000), 0);
+  const hasEntries = fields.some(({ input }) => input.value !== '');
+  renderTotal("planned", hasEntries ? net : null);
+}
+
+function openMonth(date) {
+  displayedMonth = date;
+  const beforeStart = date < '2026-12';
+  form.hidden = beforeStart;
+  document.getElementById('beforeStart').hidden = !beforeStart;
+  if (beforeStart) {
+    fields.forEach(({ input }) => { input.value = ''; });
+    status.textContent = '';
+    renderTotal('planned', null);
+    return;
+  }
+  let values = drafts.get(date);
+  if (!values) {
+    try { values = JSON.parse(localStorage.getItem(storageKey + date)); }
+    catch { values = null; }
+  }
+  const initial = initialPlan(date);
+  fields.forEach(({ key, input }, index) => {
+    input.value = fixed.has(key) ? (initial[key] ?? '') : (values?.[index] ?? initial[key] ?? "");
+  });
+  status.textContent = '';
+  calculate();
+}
+
+month.addEventListener('change', () => {
+  if (month.value) openMonth(month.value);
+  else month.value = displayedMonth;
+});
+document.getElementById('nextMonth').addEventListener('click', () => {
+  const [year, current] = displayedMonth.split('-').map(Number);
+  const nextYear = current === 12 ? year + 1 : year;
+  const nextMonth = current === 12 ? 1 : current + 1;
+  month.value = `${nextYear}-${String(nextMonth).padStart(2, '0')}`;
+  openMonth(month.value);
+});
+form.addEventListener('input', () => {
+  drafts.set(displayedMonth, readInputs());
+  status.textContent = '「収支を更新」を押すと反映されます。';
+});
+form.addEventListener('submit', event => {
+  event.preventDefault();
+  if (form.hidden) return;
+  calculate();
+  try {
+    localStorage.setItem(storageKey + displayedMonth, JSON.stringify(readInputs()));
+    status.textContent = '収支を更新し、この月の入力を保存しました。';
+  } catch {
+    status.textContent = 'ブラウザに保存できませんでした。画面を閉じる前に入力内容を控えてください。';
+  }
+});
+month.value = today.format(new Date());
+openMonth(month.value);
+</script>
+</body>
+</html>
